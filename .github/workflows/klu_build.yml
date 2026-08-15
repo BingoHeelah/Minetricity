@@ -1,0 +1,39 @@
+name: KLU library builder
+
+on: [push, pull_request]
+
+jobs:
+  build-natives:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target-os: linux
+            arch: x64
+            out_file: libklu_slim.so
+          - os: windows-latest
+            target-os: windows
+            arch: x64
+            out_file: klu_slim.dll
+          - os: macos-latest
+            target-os: macos
+            arch: arm64
+            out_file: libklu_slim.dylib
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: KLU module
+        run: git clone --depth 1 https://github.com/DrTimothyAldenDavis/SuiteSparse.git
+
+      - name: KLU build
+        run: |
+          mkdir native_build && cd native_build
+          cmake ../SuiteSparse/KLU -DBUILD_SHARED_LIBS=ON
+          cmake --build . --config Release
+
+      - name: Publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: klu-${{ matrix.target-os }}-${{ matrix.arch }}
+          path: native_build/*${{ matrix.out_file
