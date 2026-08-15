@@ -11,18 +11,36 @@ jobs:
             target-os: linux
             arch: x64
             out_file: libklu_slim.so
+            cmake_flags: "-DBLA_VENDOR=OpenBLAS -DBLA_STATIC=ON"
+
           - os: windows-latest
             target-os: windows
             arch: x64
             out_file: klu_slim.dll
+            cmake_flags: "-DBLA_VENDOR=OpenBLAS -DBLA_STATIC=ON"
+
           - os: macos-latest
             target-os: macos
             arch: arm64
             out_file: libklu_slim.dylib
+            cmake_flags: "-DBLA_VENDOR=Apple"
 
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Linux OpenBLAS
+        if: matrix.target-os == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libopenblas-dev
+
+      - name: Windows OpenBLAS
+        if: matrix.target-os == 'windows'
+        run: |
+          vcpkg install openblas:x64-windows-static
+          echo "CMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $GITHUB_ENV 
+
       - name: KLU module
         run: git clone --depth 1 https://github.com/DrTimothyAldenDavis/SuiteSparse.git
 
@@ -30,11 +48,13 @@ jobs:
         run: |
           cmake -B build -S SuiteSparse \
             -DBUILD_SHARED_LIBS=ON \
-            -DSUITESPARSE_ENABLE_PROJECTS="klu"
+            -DSUITESPARSE_ENABLE_PROJECTS="klu" \
+            -DSUITESPARSE_USE_CUDA=OFF \
+            ${{ matrix.cmake_flags }}
           cmake --build build --target klu --config Release
 
       - name: Publish artifact
         uses: actions/upload-artifact@v4
         with:
           name: klu-${{ matrix.target-os }}-${{ matrix.arch }}
-          path: native_build/*${{ matrix.out_file }}
+          path: build/*${{ matrix.out_file }}
