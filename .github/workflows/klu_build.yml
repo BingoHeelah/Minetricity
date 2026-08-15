@@ -38,8 +38,7 @@ jobs:
       - name: Windows OpenBLAS
         if: matrix.target-os == 'windows'
         run: |
-          vcpkg install openblas:x64-windows-static
-          echo "CMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $GITHUB_ENV 
+          choco install openblas --no-progress
 
       - name: KLU module
         run: git clone --depth 1 https://github.com/DrTimothyAldenDavis/SuiteSparse.git
@@ -51,7 +50,7 @@ jobs:
             -DSUITESPARSE_ENABLE_PROJECTS="klu" \
             -DSUITESPARSE_USE_CUDA=OFF \
             ${{ matrix.cmake_flags }}
-          cmake --build build --target klu --config Release
+          cmake --build build --config Release
 
       - name: Publish artifact
         uses: actions/upload-artifact@v4
