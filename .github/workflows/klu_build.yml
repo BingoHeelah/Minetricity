@@ -28,9 +28,10 @@ jobs:
 
       - name: KLU build
         run: |
-          mkdir native_build && cd native_build
-          cmake ../SuiteSparse/KLU -DBUILD_SHARED_LIBS=ON
-          cmake --build . --config Release
+          cmake -B build -S SuiteSparse \
+            -DBUILD_SHARED_LIBS=ON \
+            -DSUITESPARSE_ENABLE_PROJECTS="klu"
+          cmake --build build --target klu --config Release
 
       - name: Publish artifact
         uses: actions/upload-artifact@v4
