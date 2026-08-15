@@ -36,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: klu-${{ matrix.target-os }}-${{ matrix.arch }}
-          path: native_build/*${{ matrix.out_file
+          path: native_build/*${{ matrix.out_file }}
