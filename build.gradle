@@ -1,8 +1,13 @@
 plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.2.20'
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.143'
     id 'idea'
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -28,7 +33,15 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    maven {
+        url = "https://modrinth.com"
+        name = "Modrinth"
+    }
+
+    maven {
+        name = 'Kotlin for Forge'
+        url = 'https://thedarkcolour.github.io/KotlinForForge/'
+    }
 }
 
 base {
@@ -137,6 +150,9 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    implementation 'thedarkcolour:kotlinforforge-neoforge:5.10.0'
+    implementation 'org.ejml:ejml-all:0.46.1'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
