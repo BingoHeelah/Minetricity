@@ -1,0 +1,7 @@
+{
+  "itemGroup.minetricity": "Minetricity",
+
+  "death.attack.minetricity.shocked": "%1$s became one with the electrons",
+  "death.attack.minetricity.shocked.player": "%1$s became one with the electrons by %2$s",
+  "death.attack.minetricity.vaporized": "%1$s was swallowed by a cloud of vaporized metal"
+}
