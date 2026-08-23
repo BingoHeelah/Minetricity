@@ -153,6 +153,14 @@ dependencies {
 
     implementation 'thedarkcolour:kotlinforforge-neoforge:5.10.0'
     implementation 'org.ejml:ejml-all:0.46.1'
+
+    testImplementation platform('org.junit:junit-bom:6.1.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
