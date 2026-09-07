@@ -17,7 +17,7 @@ class Pinwheel() {
 }
 
 class CircuitBuilder {
-    val components = mutableListOf<CircuitComponent>()
+    val components = hashSetOf<CircuitComponent>()
     val groundPins = hashSetOf<ComponentPin>()
     val pinwheels = hashSetOf<Pinwheel>()
     val pinwheelMap = hashMapOf<ComponentPin, Pinwheel>()
@@ -30,9 +30,15 @@ class CircuitBuilder {
         }
     }
 
-    fun addComponents(comp: CircuitComponent) {
+    fun addComponent(comp: CircuitComponent) {
         validateBuilding("Tried to add component on built circuit")
         components.add(comp)
+    }
+
+    fun addComponents(vararg comp: CircuitComponent) {
+        validateBuilding("Tried to add component on built circuit")
+
+        components.addAll(comp)
     }
 
     /**
@@ -189,7 +195,7 @@ class CircuitBuilder {
         return BuilderResult(
             nodeCount = numNodes,
             extraSlotCount = index - numNodes,
-            components = components
+            components = components.toList()
         )
     }
 
